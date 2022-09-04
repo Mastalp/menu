@@ -17,8 +17,8 @@ Pour vérifier l'installation dans powershell :
 python3 --version
 ```
 
-Il faut installer le module googletrans version 3.1.0a0 pour python3 et le
-module openpyxl
+Il faut installer le module googletrans version 3.1.0a0 pour python3, le
+module openpyxl, et le module datetime
 Utilisez le package manager dans powershell : 
 
 ```bash
@@ -27,6 +27,10 @@ pip install googletrans==3.1.0a0
 
 ```bash
 pip install openpyxl
+```
+
+```bash
+pip install datetime
 ```
 
 
