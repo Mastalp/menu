@@ -23,6 +23,9 @@ Utilisez le package manager dans powershell :
 
 ```bash
 pip install googletrans==3.1.0a0
+```
+
+```bash
 pip install openpyxl
 ```
 
@@ -38,7 +41,7 @@ S'assurer d'avoir initialement dans le répertoire:
 
 	1. menu_auto.exe
 
-	2. Menu_sur_6_semaines_AMB.xlsx
+	2. entrée.xlsx
 
 	3. menu_template.xlsx
  
