@@ -69,25 +69,25 @@ date_cell = dest_feuille['A1']
 date_object = datetime.strptime(src_feuille['A2'].value, "%d-%m-%Y")
 date_cell.value = date_object
 
-# NAME using doc_name func
+# NAME using doc_name func and date_object
 document_name = doc_name(date_object)
 
 # SRC and DEST cell tuples from openpyxl ranges
 src_cells = src_feuille['B4':'H20']
 dest_cells = dest_feuille['F4':'S13']
 
-# vars for progress bar
-progress, total = 0, 70 # items to be translated (10/j, 7j)
-
-print("MENU_AUTOMATIQUE POUR OMERLO V 2.0 par LP Roy-LEMAIRE")
+print("MENU_AUTOMATIQUE POUR OMERLO V 2.0 par LPRL")
 time.sleep(2)
 print("LE PROGRAMME VA COMMENCER...")
 time.sleep(1)
 
+# vars for progress bar
+progress, total = 0, 70 # items to be translated (10/j, 7j)
+
 # CALLING MAIN FUNC ***
 menu_auto(src_cells, dest_cells)
 
-# SAVING DOC AS
+# SAVING DOC AS using doc_name function
 dest_doc.save(document_name)
 
 print('\r')
