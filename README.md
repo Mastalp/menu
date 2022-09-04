@@ -49,6 +49,9 @@ S'assurer d'avoir dans le répertoire:
 
 ( *** LES DOCUMENTS DOIVENT AVOIR LES NOMS EXACTS *** )
 
+
+Dans la console powershell : 
+
 ```bash
 python3 menu_auto.py
 ```
