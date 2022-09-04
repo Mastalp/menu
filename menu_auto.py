@@ -3,6 +3,7 @@ from googletrans import Translator
 from openpyxl import load_workbook
 from datetime import datetime
 import time
+import sys
 
 translator = Translator()
 
@@ -21,7 +22,7 @@ def progress_bar(progress, total):
     print(f"\r|{bar}| {percent:.2f}%", end="\r")
 
 # returns doc name from date object
-def doc_name(date_object):
+def save_as_name(date_object):
     months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 
     'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
     name = 'Menu ' + str(date_object.day) + ' ' + \
@@ -29,7 +30,7 @@ def doc_name(date_object):
         str(date_object.year) + '.xlsx'
     return name
 
-# looping thru tuples, GETTING and SETTING values
+# looping thru tuples, GETTING and SETTING values using menu list
 def menu_auto(src_cells, dest_cells):
     menu = [] # will contain 140 items to be placed in template
 
@@ -49,6 +50,12 @@ def menu_auto(src_cells, dest_cells):
             row[i].value = menu[0] # item at index 0
             menu.pop(0) # popping the stack of delicious items
 
+def error_handler():
+    time.sleep(1)
+    print("CETTE FENÊTRE SE FERMERA AUTOMATIQUEMENT")
+    time.sleep(5)
+    sys.exit(1)
+
 
 # MAIN
 
@@ -58,19 +65,33 @@ src_excel_doc = 'entrée.xlsx'
 # src for save as
 dest_excel_doc = 'menu_template.xlsx'
 
-# loading excel docs with openpyxl
-src_doc = load_workbook(src_excel_doc)
-src_feuille = src_doc.active
-dest_doc = load_workbook(dest_excel_doc)
-dest_feuille = dest_doc.active
+# loading excel docs with openpyxl w/ error handling
+try:
+    src_doc = load_workbook(src_excel_doc)
+    src_feuille = src_doc.active
+except:
+    print("ERREUR ! Le fichier " + src_excel_doc + \
+        " n'est pas dans le répertoire!")
+    error_handler()
+try:
+    dest_doc = load_workbook(dest_excel_doc)
+    dest_feuille = dest_doc.active
+except:
+    print("ERREUR ! Le fichier " + dest_excel_doc + \
+        " n'est pas dans le répertoire!")
+    error_handler()
 
-# DATE using datetime
-date_cell = dest_feuille['A1']
-date_object = datetime.strptime(src_feuille['A2'].value, "%d-%m-%Y")
-date_cell.value = date_object
+# DATE using datetime w/ error handling
+try:
+    date_cell = dest_feuille['A1']
+    date_object = datetime.strptime(src_feuille['A2'].value, "%d-%m-%Y")
+    date_cell.value = date_object
+except:
+    print("ERREUR ! La date est incorrecte dans " + src_excel_doc + " !")
+    error_handler()
 
-# NAME using doc_name func and date_object
-document_name = doc_name(date_object)
+# NAME using save_as_name func and date_object
+document_name = save_as_name(date_object)
 
 # SRC and DEST cell tuples from openpyxl ranges
 src_cells = src_feuille['B4':'H20']
@@ -87,14 +108,13 @@ progress, total = 0, 70 # items to be translated (10/j, 7j)
 # CALLING MAIN FUNC ***
 menu_auto(src_cells, dest_cells)
 
-# SAVING DOC AS using doc_name function
+# SAVING DOC AS using save_as_name function
 dest_doc.save(document_name)
 
-print('\r')
-
+print('\r') # print under progress bar
 print("TRAVAIL TERMINÉ")
 time.sleep(1)
-print("LE MENU EST MAINTENANT DANS LE RÉPERTOIRE ACTIF")
+print(f"LE MENU '{document_name}' EST MAINTENANT DANS LE RÉPERTOIRE ACTIF")
 time.sleep(2)
 print("CETTE FENÊTRE SE FERMERA AUTOMATIQUEMENT")
 time.sleep(5)
