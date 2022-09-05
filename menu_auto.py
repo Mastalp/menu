@@ -45,7 +45,7 @@ def save_as_name(date_object):
     months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 
     'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
     name = f"Menu {str(date_object.day)} \
-        {str(months[int(date_object.month) - 1])} {str(date_object.year)}.xlsx"
+{str(months[int(date_object.month) - 1])} {str(date_object.year)}.xlsx"
     return name
 
 # error handler
@@ -152,8 +152,8 @@ dest_doc.save(document_name)
 print('\r') # print following UNDER progress bar
 print(f"{colors.OKGREEN}TRAVAIL TERMINÉ{colors.ENDC}")
 time.sleep(1)
-print(f"{colors.OKGREEN}LE MENU '{colors.FAIL}{document_name}{colors.ENDC}' \
-{colors.OKGREEN}EST MAINTENANT DANS LE RÉPERTOIRE ACTIF{colors.ENDC}")
+print(f"{colors.OKGREEN}LE MENU '{colors.FAIL}{document_name}{colors.ENDC} \
+{colors.OKGREEN}'EST MAINTENANT DANS LE RÉPERTOIRE ACTIF{colors.ENDC}")
 time.sleep(2)
 print(f"{colors.WARNING}CETTE FENÊTRE SE FERMERA AUTOMATIQUEMENT{colors.ENDC}")
 time.sleep(7)
