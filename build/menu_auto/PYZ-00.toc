@@ -559,6 +559,9 @@
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.10_3.10.1776.0_x64__qbz5n2kfra8p0\\lib\\_py_abc.py',
    'PYMODULE'),
+  ('menu_auto_ext',
+   'C:\\Users\\lproy\\OneDrive\\Documents\\GitHub\\menu\\menu_auto_ext.py',
+   'PYMODULE'),
   ('_strptime',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.10_3.10.1776.0_x64__qbz5n2kfra8p0\\lib\\_strptime.py',

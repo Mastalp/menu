@@ -21,13 +21,21 @@ Il faut installer le module googletrans version 3.1.0a0 pour python3, le
 module openpyxl, et le module datetime
 Utilisez le package manager dans powershell : 
 
-```bash
-pip install googletrans==3.1.0a0
-```
+Sert à interragir avec les fichiers EXCEL (.xlsx)
 
 ```bash
 pip install openpyxl
 ```
+
+Sert à traduire tous les items du menu en anglais. *** VERSION 3.1.0a0 ***
+
+```bash
+pip install googletrans==3.1.0a0
+```
+
+Sert à introduire la date dans template.xlsx - La cellule qui contient la date
+dans entrée.xlsx doit être formatée comme "TEXTE" pour que la fonction strptime() fonctionne. 
+https://www.programiz.com/python-programming/datetime/strptime
 
 ```bash
 pip install datetime

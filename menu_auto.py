@@ -1,4 +1,6 @@
-# menu 2.0 using openpyxl instead of csv
+# menu omerlo 2.0 using openpyxl instead of csv
+# par Laurent-Philippe Roy-Lemaire - lp.roylemaire@gmail.com
+#
 from googletrans import Translator
 from openpyxl import load_workbook
 from datetime import datetime
@@ -7,19 +9,20 @@ import sys
 import os
 import menu_auto_ext # colors and menu string
 
-os.system('color')
-colors = menu_auto_ext.bcolors
-translator = Translator()
+os.system('color') # intializing terminal for colored text
+
+colors = menu_auto_ext.bcolors # colors from ext file
+translator = Translator() # translator object from googletrans==3.1.0a0
 
 # FUNCTIONS
 
-# returns translated menu_item with googletrans
+# returns translated menu_item with googletrans .translate method
 def menu_translate(menu_item):
     global progress
     progress += 1
     return (translator.translate(menu_item, dest='en')).text
     
-# prints a progress bar
+# prints a progress bar (prints over itself)
 def progress_bar(progress, total):
     percent = 100 * (progress / float(total))
     bar = '█' * int(percent) + '-' * (100 - int(percent))
@@ -37,24 +40,30 @@ def save_as_name(date_object):
 # error handler
 def error_handler():
     time.sleep(1)
-    print(f"{colors.WARNING}CETTE FENÊTRE SE FERMERA AUTOMATIQUEMENT \
-        {colors.ENDC}")
-    time.sleep(5)
-    sys.exit(1)
+    print(f"{colors.WARNING}RÉFÉREZ VOUS AU MANUEL AU BESOIN. \
+    CETTE FENÊTRE SE FERMERA AUTOMATIQUEMENT {colors.ENDC}")
+    time.sleep(7)
+    sys.exit(1) # *** EXIT PROGRAM ***
 
-# looping thru tuples, GETTING and SETTING values using menu list
+# looping thru SRC and DEST tuples, GETTING and SETTING values using menu list
 def menu_auto(src_cells, dest_cells):
     menu = [] # will contain 140 items to be placed in template
 
     # READ, looping thru src cell tuples, getting and translating cell values
-    for row in src_cells:
-        for i in range(len(row)):
-            if row[i].value != None and len(row[i].value) > 2: # != et, ou
-                menu_item_f = (row[i].value).strip().capitalize()
-                menu.append(menu_item_f)
-                menu_item_f_t = menu_translate(menu_item_f)
-                menu.append(menu_item_f_t)
-                progress_bar(progress, total)
+    try:
+        for row in src_cells:
+            for i in range(len(row)):
+                if row[i].value != None and len(row[i].value) > 2: # != et, ou
+                    menu_item_f = (row[i].value).strip().capitalize()
+                    menu.append(menu_item_f)
+                    menu_item_f_t = menu_translate(menu_item_f)
+                    menu.append(menu_item_f_t)
+                    progress_bar(progress, total)
+    except:
+        print(f"{colors.FAIL}ERREUR ! Il y a un problème dans \
+{src_excel_doc} ! REVOIR LE FORMATAGE!{colors.ENDC}" )
+        error_handler()
+
 
     # WRITE, looping thru dest cell tuples, setting values
     try:
@@ -63,8 +72,8 @@ def menu_auto(src_cells, dest_cells):
                 row[i].value = menu[0] # item at index 0
                 menu.pop(0) # popping the stack of delicious items
     except:
-        print(f"{colors.HEADER}ERREUR ! Il y a des cases vides dans \
-            {src_excel_doc} !{colors.ENDC}" )
+        print(f"{colors.FAIL}ERREUR ! Il y a des cases vides dans \
+{src_excel_doc} !{colors.ENDC}" )
         error_handler()
 
 
@@ -82,7 +91,7 @@ try:
     src_feuille = src_doc.active
 except:
     print(f"{colors.FAIL}ERREUR ! Le fichier \
-        {src_excel_doc} n'est pas dans le répertoire!{colors.ENDC}")
+{src_excel_doc} n'est pas dans le répertoire!{colors.ENDC}")
     error_handler()
 
 # loading dest excel doc with openpyxl w/ error handling
@@ -91,7 +100,7 @@ try:
     dest_feuille = dest_doc.active
 except:
     print(f"{colors.FAIL}ERREUR ! Le fichier \
-        {dest_excel_doc} n'est pas dans le répertoire!{colors.ENDC}")
+{dest_excel_doc} n'est pas dans le répertoire!{colors.ENDC}")
     error_handler()
 
 # DATE using datetime w/ error handling
@@ -103,8 +112,8 @@ try:
     date_object = datetime.strptime(src_feuille['A2'].value, "%m/%d/%Y")
     date_cell.value = date_object
 except:
-    print(f"{colors.FAIL}ERREUR ! La date est incorrecte dans \
-        {src_excel_doc}!{colors.ENDC}")
+    print(f"{colors.FAIL}ERREUR ! \
+La date est incorrecte dans {src_excel_doc}!{colors.ENDC}")
     error_handler()
 
 # NAME using save_as_name func and date_object
@@ -134,7 +143,7 @@ print('\r') # print following UNDER progress bar
 print(f"{colors.OKGREEN}TRAVAIL TERMINÉ{colors.ENDC}")
 time.sleep(1)
 print(f"{colors.OKCYAN}LE MENU '{document_name}' \
-    EST MAINTENANT DANS LE RÉPERTOIRE ACTIF{colors.ENDC}")
+EST MAINTENANT DANS LE RÉPERTOIRE ACTIF{colors.ENDC}")
 time.sleep(2)
 print(f"{colors.WARNING}CETTE FENÊTRE SE FERMERA AUTOMATIQUEMENT{colors.ENDC}")
-time.sleep(5)
+time.sleep(7)
