@@ -1,6 +1,3 @@
-# menu
-menu OMERLO
-
 # menu_auto.py
 
 menu_auto.py est un programme qui produit le fichier excel demandé par OMERLO automatiquement.
@@ -8,7 +5,7 @@ Il prend en entrée le fichier excel envoyé par le CSA et retourne le fichier e
 qui va ensuite devoir etre mis dans OMERLO par la personne à la réception.
 
 
-## Installation ( NO ADMIN ) 
+## Installation 
 
 Il faut installer python3 sur l'ordinateur, disponible sur le Microsoft Store.
 Pour vérifier l'installation dans powershell : 
@@ -41,38 +38,20 @@ https://www.programiz.com/python-programming/datetime/strptime
 pip install datetime
 ```
 
-
-## Usage ( NO ADMIN )
-
-Les instructions si jointes dans `INSTRUCTIONS_menu_automatique.docx` sont absolument cruciales
-et doivent être suivies à la lettre
-
-S'assurer d'avoir dans le répertoire:
-
-	1. menu_auto.py
-
-	2. entrée.xlsx
-
-	3. menu_template.xlsx
-
-( *** LES DOCUMENTS DOIVENT AVOIR LES NOMS EXACTS *** )
-
-
-Dans la console powershell : 
+Pour construire l'application, nous aurons besoin de pyinstaller:
 
 ```bash
-python3 menu_auto.py
+pip install pyinstaller
 ```
 
-Le menu de la semaine apparaitra dans le répertoire actif.
+On 'build' le .exe avec la commande suivante:
+
+```bash
+python -m PyInstaller --onefile menu_auto.py
+```
 
 
-## Installation ( ADMIN )
-
-Si c'est possible d'etre admin, on peut run menu_auto.exe ! Le programme est
-compilé avec PyInstaller et contient tous les modules necessaires.
-
-## Usage ( ADMIN )
+## Usage
 
 Les instructions si jointes dans `INSTRUCTIONS_menu_automatique.docx` sont absolument cruciales
 et doivent être suivies à la lettre
@@ -93,3 +72,23 @@ Double-cliquer le programme menu_auto.exe
 ( *** IL FAUT ÉXÉCUTER CE PROGRAMME EN TANT QU'ADMINISTRATEUR *** )
 
 Le menu de la semaine apparaitra dans le répertoire actif.
+
+
+## Erreurs
+
+1. `ERREUR ! Il y a un problème dans {src_excel_doc} ! REVOIR LE FORMATAGE!`
+
+Il faut s'assurer que le document excel soit conforme au formatage nécéssaire pour le programme.
+
+2. `ERREUR ! Il y a des cases vides dans {src_excel_doc}`
+
+Le document entrée.xlsx ne peut pas contenir de cellules vides.
+
+3. `ERREUR ! Le fichier {src_excel_doc/dest_excel_doc} n'est pas dans le répertoire!`
+
+Les documents ne sont pas nommés de la bonne manière. S'assurer que les noms soient exacts!
+
+4. `ERREUR ! La date est incorrecte dans {src_excel_doc}!`
+
+La cellule excel 'A2' dans le fichier excel source 'entrée.xlsx' doit 
+être ***formattée*** comme *** TEXTE *** pour que datetime.strptime() fonctionne
