@@ -44,9 +44,11 @@ def progress_bar(progress, total):
 def save_as_name(date_object):
     months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 
     'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
-    name = 'Menu ' + str(date_object.day) + ' ' + \
-    str(months[int(date_object.month) - 1]) + ' ' + \
-        str(date_object.year) + '.xlsx'
+    name = f"Menu {str(date_object.day)} \
+        {str(months[int(date_object.month) - 1])} {str(date_object.year).xlsx}"
+    #name = 'Menu ' + str(date_object.day) + ' ' + \
+    #str(months[int(date_object.month) - 1]) + ' ' + \
+    #    str(date_object.year) + '.xlsx'
     return name
 
 # error handler
