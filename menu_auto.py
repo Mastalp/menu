@@ -4,7 +4,11 @@ from openpyxl import load_workbook
 from datetime import datetime
 import time
 import sys
+import os
+import menu_auto_ext # colors and menu string
 
+os.system('color')
+colors = menu_auto_ext.bcolors
 translator = Translator()
 
 # FUNCTIONS
@@ -30,6 +34,14 @@ def save_as_name(date_object):
         str(date_object.year) + '.xlsx'
     return name
 
+# error handler
+def error_handler():
+    time.sleep(1)
+    print(f"{colors.WARNING}CETTE FENÊTRE SE FERMERA AUTOMATIQUEMENT \
+        {colors.ENDC}")
+    time.sleep(5)
+    sys.exit(1)
+
 # looping thru tuples, GETTING and SETTING values using menu list
 def menu_auto(src_cells, dest_cells):
     menu = [] # will contain 140 items to be placed in template
@@ -45,19 +57,18 @@ def menu_auto(src_cells, dest_cells):
                 progress_bar(progress, total)
 
     # WRITE, looping thru dest cell tuples, setting values
-    for row in dest_cells:
-        for i in range(len(row)):
-            row[i].value = menu[0] # item at index 0
-            menu.pop(0) # popping the stack of delicious items
+    try:
+        for row in dest_cells:
+            for i in range(len(row)):
+                row[i].value = menu[0] # item at index 0
+                menu.pop(0) # popping the stack of delicious items
+    except:
+        print(f"{colors.HEADER}ERREUR ! Il y a des cases vides dans \
+            {src_excel_doc} !{colors.ENDC}" )
+        error_handler()
 
-def error_handler():
-    time.sleep(1)
-    print("CETTE FENÊTRE SE FERMERA AUTOMATIQUEMENT")
-    time.sleep(5)
-    sys.exit(1)
 
-
-# MAIN
+### MAIN ###
 
 # get input for src name ? *** TO DO ***
 src_excel_doc = 'entrée.xlsx'
@@ -65,56 +76,65 @@ src_excel_doc = 'entrée.xlsx'
 # src for save as
 dest_excel_doc = 'menu_template.xlsx'
 
-# loading excel docs with openpyxl w/ error handling
+# loading src excel doc with openpyxl w/ error handling
 try:
     src_doc = load_workbook(src_excel_doc)
     src_feuille = src_doc.active
 except:
-    print("ERREUR ! Le fichier " + src_excel_doc + \
-        " n'est pas dans le répertoire!")
+    print(f"{colors.FAIL}ERREUR ! Le fichier \
+        {src_excel_doc} n'est pas dans le répertoire!{colors.ENDC}")
     error_handler()
+
+# loading dest excel doc with openpyxl w/ error handling
 try:
     dest_doc = load_workbook(dest_excel_doc)
     dest_feuille = dest_doc.active
 except:
-    print("ERREUR ! Le fichier " + dest_excel_doc + \
-        " n'est pas dans le répertoire!")
+    print(f"{colors.FAIL}ERREUR ! Le fichier \
+        {dest_excel_doc} n'est pas dans le répertoire!{colors.ENDC}")
     error_handler()
 
 # DATE using datetime w/ error handling
+# THE DATE NEEDS TO BE A STRING IN SRC EXCEL DOC FOR DATETIME.STRPTIME()
+# https://www.programiz.com/python-programming/datetime/strptime
+# see Format Code List
 try:
     date_cell = dest_feuille['A1']
-    date_object = datetime.strptime(src_feuille['A2'].value, "%d-%m-%Y")
+    date_object = datetime.strptime(src_feuille['A2'].value, "%m/%d/%Y")
     date_cell.value = date_object
 except:
-    print("ERREUR ! La date est incorrecte dans " + src_excel_doc + " !")
+    print(f"{colors.FAIL}ERREUR ! La date est incorrecte dans \
+        {src_excel_doc}!{colors.ENDC}")
     error_handler()
 
 # NAME using save_as_name func and date_object
 document_name = save_as_name(date_object)
 
-# SRC and DEST cell tuples from openpyxl ranges
+# SRC and DEST cells from openpyxl ranges as tuples
 src_cells = src_feuille['B4':'H20']
 dest_cells = dest_feuille['F4':'S13']
-
-print("MENU_AUTOMATIQUE POUR OMERLO V 2.0 par LPRL")
-time.sleep(2)
-print("LE PROGRAMME VA COMMENCER...")
-time.sleep(1)
 
 # vars for progress bar
 progress, total = 0, 70 # items to be translated (10/j, 7j)
 
-# CALLING MAIN FUNC ***
+# user communication
+menu_placard = menu_auto_ext.MENU_AUTO_STRING
+print(f"{colors.BOLD}{menu_placard}{colors.ENDC}")
+time.sleep(2)
+print(f"{colors.BOLD}LE PROGRAMME VA COMMENCER...{colors.ENDC}")
+time.sleep(1)
+
+# calling main func with openpyxl cell ranges
 menu_auto(src_cells, dest_cells)
 
 # SAVING DOC AS using save_as_name function
 dest_doc.save(document_name)
 
-print('\r') # print under progress bar
-print("TRAVAIL TERMINÉ")
+print('\r') # print following UNDER progress bar
+print(f"{colors.OKGREEN}TRAVAIL TERMINÉ{colors.ENDC}")
 time.sleep(1)
-print(f"LE MENU '{document_name}' EST MAINTENANT DANS LE RÉPERTOIRE ACTIF")
+print(f"{colors.OKCYAN}LE MENU '{document_name}' \
+    EST MAINTENANT DANS LE RÉPERTOIRE ACTIF{colors.ENDC}")
 time.sleep(2)
-print("CETTE FENÊTRE SE FERMERA AUTOMATIQUEMENT")
+print(f"{colors.WARNING}CETTE FENÊTRE SE FERMERA AUTOMATIQUEMENT{colors.ENDC}")
 time.sleep(5)
