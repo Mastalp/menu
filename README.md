@@ -50,6 +50,9 @@ On 'build' le .exe avec la commande suivante:
 python -m PyInstaller --onefile menu_auto.py
 ```
 
+Le fichier `dist` produit par cette commande devient le repertoire actif pour le programme
+On peut le renommer à `MENU_AUTO`
+Y placer entrée.xlsx et menu_template.xlsx, puis éxécuter MENU_AUTO.exe
 
 ## Usage
 
