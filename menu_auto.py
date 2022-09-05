@@ -7,11 +7,23 @@ from datetime import datetime
 import time
 import sys
 import os
-import menu_auto_ext # colors and menu string
+
+class colors:
+    HEADER = '\033[95m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+
+menu_placard = '''
++---------------------------------+
+| M E N U   O M E R L O   A U T O |
++---------------------------------+
+MENU_AUTOMATIQUE POUR OMERLO V 2.0 par LPRL
+'''
 
 os.system('color') # intializing terminal for colored text
 
-colors = menu_auto_ext.bcolors # colors from ext file
 translator = Translator() # translator object from googletrans==3.1.0a0
 
 # FUNCTIONS
@@ -26,7 +38,7 @@ def menu_translate(menu_item):
 def progress_bar(progress, total):
     percent = 100 * (progress / float(total))
     bar = '█' * int(percent) + '-' * (100 - int(percent))
-    print(f"\r|{bar}| {percent:.2f}%", end="\r")
+    print(f"{colors.HEADER}\r|{bar}| {percent:.2f}%{colors.ENDC}", end="\r")
 
 # returns doc name from date object
 def save_as_name(date_object):
@@ -127,10 +139,9 @@ dest_cells = dest_feuille['F4':'S13']
 progress, total = 0, 70 # items to be translated (10/j, 7j)
 
 # user communication
-menu_placard = menu_auto_ext.MENU_AUTO_STRING
-print(f"{colors.BOLD}{menu_placard}{colors.ENDC}")
+print(f"{colors.HEADER}{menu_placard}{colors.ENDC}")
 time.sleep(2)
-print(f"{colors.BOLD}LE PROGRAMME VA COMMENCER...{colors.ENDC}")
+print(f"{colors.HEADER}LE PROGRAMME VA COMMENCER...{colors.ENDC}")
 time.sleep(1)
 
 # calling main func with openpyxl cell ranges
@@ -142,8 +153,8 @@ dest_doc.save(document_name)
 print('\r') # print following UNDER progress bar
 print(f"{colors.OKGREEN}TRAVAIL TERMINÉ{colors.ENDC}")
 time.sleep(1)
-print(f"{colors.OKCYAN}LE MENU '{document_name}' \
-EST MAINTENANT DANS LE RÉPERTOIRE ACTIF{colors.ENDC}")
+print(f"{colors.OKGREEN}LE MENU '{colors.FAIL}{document_name}{colors.ENDC}' \
+{colors.OKGREEN}EST MAINTENANT DANS LE RÉPERTOIRE ACTIF{colors.ENDC}")
 time.sleep(2)
 print(f"{colors.WARNING}CETTE FENÊTRE SE FERMERA AUTOMATIQUEMENT{colors.ENDC}")
 time.sleep(7)
