@@ -1,11 +1,11 @@
 # menu_auto.py
 
 menu_auto.py est un programme qui produit le fichier excel demandé par OMERLO automatiquement.
-Il prend en entrée le fichier excel envoyé par le CSA et retourne le fichier excel
-qui va ensuite devoir etre mis dans OMERLO par la personne à la réception.
+Il prend en entrée le fichier excel template que le CSA envoie a la reception et retourne le fichier
+excel qui va ensuite devoir etre mis dans OMERLO par la personne à la réception.
 
 
-## Installation 
+## Installation a partir de 0
 
 Il faut installer python3 sur l'ordinateur, disponible sur le Microsoft Store.
 Pour vérifier l'installation dans powershell : 
@@ -53,11 +53,15 @@ python -m PyInstaller --onefile menu_auto.py
 Le fichier `dist` produit par cette commande devient le repertoire actif pour le programme
 On peut le renommer à `MENU_AUTO`. 
 Y placer entrée.xlsx et menu_template.xlsx, puis éxécuter MENU_AUTO.exe
+Le répertoire `build` peut être supprimé.
+Le fichier `.spec` peut être supprimé.
+
 
 ## Usage
 
 Les instructions si jointes dans `INSTRUCTIONS_menu_automatique.docx` sont absolument cruciales
-et doivent être suivies à la lettre
+et doivent être suivies à la lettre.
+Il est aussi important de noter que le programme ne fonctionne pas avec n’importe quel fichier CSA, il faut utiliser celui qui est inclus.
 
 S'assurer d'avoir dans le répertoire:
 
