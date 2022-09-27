@@ -31,7 +31,8 @@ pip install googletrans==3.1.0a0
 ```
 
 Sert à introduire la date dans template.xlsx - La cellule qui contient la date
-dans entrée.xlsx doit être formatée comme "TEXTE" pour que la fonction strptime() fonctionne. 
+dans entrée.xlsx doit être formatée comme "TEXTE" et doit etre
+sous le format m-j-aaaa pour que la fonction strptime() fonctionne. 
 https://www.programiz.com/python-programming/datetime/strptime
 
 ```bash

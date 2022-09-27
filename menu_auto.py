@@ -90,20 +90,29 @@ def menu_auto(src_cells, dest_cells):
 
 ### MAIN ###
 
-# get input for src name ? *** TO DO ***
-src_excel_doc = 'entrée.xlsx'
+# placard and user input for src doc name
+print(f"{colors.HEADER}{menu_placard}{colors.ENDC}")
 
-# src for save as
+#src_excel_doc = 'entrée.xlsx'
 dest_excel_doc = 'menu_template.xlsx'
 
-# loading src excel doc with openpyxl w/ error handling
-try:
-    src_doc = load_workbook(src_excel_doc)
-    src_feuille = src_doc.active
-except:
-    print(f"{colors.FAIL}ERREUR ! Le fichier \
+time.sleep(2)
+
+# if except, loop continues
+valid_input = False
+
+while not valid_input:
+    src_excel_doc = str(input(f"{colors.OKGREEN}ENTREZ LE NOM DU DOCUMENT EXCEL SOURCE\
+{colors.WARNING} AVEC L'EXTENSION : {colors.ENDC}"))
+
+    # loading src excel doc with openpyxl w/ error handling
+    try:
+        src_doc = load_workbook(src_excel_doc)
+        src_feuille = src_doc.active
+        valid_input = True
+    except:
+        print(f"{colors.FAIL}ERREUR ! Le fichier \
 {src_excel_doc} n'est pas dans le répertoire!{colors.ENDC}")
-    error_handler()
 
 # loading dest excel doc with openpyxl w/ error handling
 try:
@@ -120,7 +129,7 @@ except:
 # see Format Code List
 try:
     date_cell = dest_feuille['A1']
-    date_object = datetime.strptime(src_feuille['A2'].value, "%m/%d/%Y")
+    date_object = datetime.strptime(src_feuille['A2'].value, "%m-%d-%Y")
     date_cell.value = date_object
 except:
     print(f"{colors.FAIL}ERREUR ! \
@@ -137,9 +146,7 @@ dest_cells = dest_feuille['F4':'S13']
 # vars for progress bar
 progress, total = 0, 70 # items to be translated (10/j, 7j)
 
-# user communication
-print(f"{colors.HEADER}{menu_placard}{colors.ENDC}")
-time.sleep(2)
+# user comm
 print(f"{colors.HEADER}LE PROGRAMME VA COMMENCER...{colors.ENDC}")
 time.sleep(1)
 
