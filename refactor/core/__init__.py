@@ -1,16 +1,14 @@
 # core/__init__.py
 
-# Expose the main interfaces and classes for easy imports
 from .interfaces import IMenuTemplate, ITranslator, IProgressBar
-from .template   import ConfiguredMenuTemplate, TemplateFactory
-from .translator import GoogleTranslator
+from .template import ConfiguredMenuTemplate, TemplateFactory
+from .adapters import GoogleTranslator, TkProgressBar
+from .menuFiller import MenuFiller
+from .date_utils import extract_date, get_output_filename
 
 __all__ = [
     "IMenuTemplate", "ITranslator", "IProgressBar",
     "ConfiguredMenuTemplate", "TemplateFactory",
-    "GoogleTranslator"
+    "GoogleTranslator", "MenuFiller", "TkProgressBar", 
+    "extract_date","get_output_filename"
 ]
-
-from .menuFiller import MenuFiller
-
-__all__ += ["MenuFiller"]

@@ -3,52 +3,82 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import json
 from openpyxl import load_workbook
+from core import TemplateFactory, MenuFiller, GoogleTranslator, TkProgressBar, IMenuTemplate
 
-from core import *
-
-class TkProgressBar:
-    """
-    Adapts a ttk.Progressbar widget to the IProgressBar interface.
-    """
-    def __init__(self, progress_widget):
-        self._progress = progress_widget
-
-    def update(self, current, total):
-        # Advance by one step; ttk.Progressbar handles the max internally
-        self._progress.step(1)
 
 class MenuAutoApp(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Menu Auto 3.0")
-        self.geometry("600x250")
+        self.title("Menu Auto")
+        self.geometry("800x300")  # a bit taller for whitespace
 
-        # — Source file picker —
-        tk.Label(self, text="Weekly menu source:").grid(row=0, column=0, sticky="w", padx=5, pady=5)
+        # ─── grid config ──────────────────────────────────────────
+        # 3 cols: only the middle one stretches
+        self.columnconfigure(0, weight=0)
+        self.columnconfigure(1, weight=1)
+        self.columnconfigure(2, weight=0)
+
+        # rows: header/separator/banner fixed, 
+        # inputs fixed, progress+filler stretch, button fixed
+        self.rowconfigure(0, weight=0)  # in-app title
+        self.rowconfigure(1, weight=0)  # line
+        self.rowconfigure(2, weight=0)  # banner
+        self.rowconfigure(3, weight=0)  # source picker
+        self.rowconfigure(4, weight=0)  # template picker
+        self.rowconfigure(5, weight=0)  # mode selector
+        self.rowconfigure(6, weight=1)  # progress + empty space
+        self.rowconfigure(7, weight=0)  # generate button
+
+        # ─── in-app title + separator ─────────────────────────────
+        tk.Label(self, text="Menu Auto Omerlo v3.1.1 par LPRL", font=("Helvetica", 16, "bold")) \
+          .grid(row=0, column=0, columnspan=3, pady=(10,0))
+        ttk.Separator(self, orient="horizontal") \
+          .grid(row=1, column=0, columnspan=3, sticky="ew", pady=5)
+
+        # ─── banner ────────────────────────────────────────────────
+        tk.Label(self, text="Choisissez le document excel source et le template", font=("Helvetica", 14)) \
+          .grid(row=2, column=0, columnspan=3, pady=(0,20))
+
+        # ─── source picker ─────────────────────────────────────────
+        tk.Label(self, text="Menu source:") \
+          .grid(row=3, column=0, sticky="e", padx=5, pady=5)
         self.src_path = tk.StringVar()
-        tk.Entry(self, textvariable=self.src_path, width=40).grid(row=0, column=1, padx=5)
-        tk.Button(self, text="Browse…", command=self.browse_src).grid(row=0, column=2)
+        tk.Entry(self, textvariable=self.src_path) \
+          .grid(row=3, column=1, sticky="ew", padx=5, pady=5)
+        tk.Button(self, text="choose", command=self.browse_src) \
+          .grid(row=3, column=2, padx=5, pady=5)
 
-        # — Template file picker —
-        tk.Label(self, text="Template workbook:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
+        # ─── template picker ───────────────────────────────────────
+        tk.Label(self, text="Menu template:") \
+          .grid(row=4, column=0, sticky="e", padx=5, pady=5)
         self.tpl_path = tk.StringVar()
-        tk.Entry(self, textvariable=self.tpl_path, width=40).grid(row=1, column=1, padx=5)
-        tk.Button(self, text="Browse…", command=self.browse_tpl).grid(row=1, column=2)
+        tk.Entry(self, textvariable=self.tpl_path) \
+          .grid(row=4, column=1, sticky="ew", padx=5, pady=5)
+        tk.Button(self, text="choose", command=self.browse_tpl) \
+          .grid(row=4, column=2, padx=5, pady=5)
 
-        # — Template selector —
-        tk.Label(self, text="Mode:").grid(row=2, column=0, sticky="w", padx=5, pady=5)
+        # ─── mode selector ─────────────────────────────────────────
+        tk.Label(self, text="Mode:") \
+          .grid(row=5, column=0, sticky="e", padx=5, pady=5)
         self.template_var = tk.StringVar(value="legacy")
         with open("templates.json") as f:
             choices = list(json.load(f).keys())
-        tk.OptionMenu(self, self.template_var, *choices).grid(row=2, column=1, sticky="w")
+        tk.OptionMenu(self, self.template_var, *choices) \
+          .grid(row=5, column=1, sticky="w", padx=5, pady=5)
 
-        # — Progress bar —
-        self.progress = ttk.Progressbar(self, orient='horizontal', length=500, mode='determinate')
-        self.progress.grid(row=3, column=0, columnspan=3, pady=10)
+        # ─── progress bar + spacer ─────────────────────────────────
+        self.progress = ttk.Progressbar(self, orient="horizontal", mode="determinate")
+        self.progress.grid(row=6, column=0, columnspan=3, sticky="ew", padx=5)
 
-        # — Generate button —
-        self.generate_btn = tk.Button(self, text="Generate Menu", command=self.on_generate)
-        self.generate_btn.grid(row=4, column=1, pady=10)
+        # ─── centered Generate button ──────────────────────────────
+        self.generate_btn = tk.Button(
+            self,
+            text="GENERATE MENU",
+            width=20,
+            command=self.on_generate
+        )
+        # no sticky ⇒ stays at its natural size, centered in the span
+        self.generate_btn.grid(row=7, column=0, columnspan=3, pady=20)
 
     def browse_src(self):
         path = filedialog.askopenfilename(filetypes=[("Excel","*.xlsx")])
@@ -73,10 +103,14 @@ class MenuAutoApp(tk.Tk):
         self.progress['maximum'] = total
 
         # Start translation/write in background thread
-        worker = threading.Thread(target=self._worker, args=(template,), daemon=True)
+        worker = threading.Thread(
+            target=self._worker, 
+            args=(template,), 
+            daemon=True)
+        
         worker.start()
 
-    def _worker(self, template):
+    def _worker(self, template: IMenuTemplate):
         try:
             src_wb = load_workbook(self.src_path.get())
             tpl_wb = load_workbook(self.tpl_path.get())
@@ -87,11 +121,10 @@ class MenuAutoApp(tk.Tk):
                 TkProgressBar(self.progress)
             )
 
-            # Execute the fill process
-            filler.run(src_wb, tpl_wb)
+            # Execute the fill process and get the file name 
+            out_name = filler.run(src_wb, tpl_wb)
 
-            # Save result
-            out_name = "output.xlsx" #tpl_wb.active['A1'].value or "output.xlsx"
+            # Save result 
             tpl_wb.save(out_name)
 
             self.after(0, lambda: messagebox.showinfo("✅ Success", f"Saved: {out_name}"))
@@ -100,6 +133,8 @@ class MenuAutoApp(tk.Tk):
         finally:
             # Re-enable the generate button
             self.after(0, lambda: self.generate_btn.config(state='normal'))
+
+    
 
 if __name__ == "__main__":
     app = MenuAutoApp()

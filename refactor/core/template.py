@@ -1,50 +1,46 @@
 import json
 from core.interfaces import IMenuTemplate
-
+from core.date_utils import extract_date
+from datetime import datetime
+from openpyxl import Workbook
 
 # ConfiguredMenuTemplate, TemplateFactory
 
 class ConfiguredMenuTemplate(IMenuTemplate):
     def __init__(self, config: dict):
-        #self.src_sheet   = config["src_sheet"]
-        # allow either one range or many
-        self.src_ranges  = ([config["src_range"]]
-                             if "src_range" in config
-                             else config["src_ranges"])
-        #self.dest_sheet  = config["dest_sheet"]
-        self.dest_ranges = ([config["dest_range"]]
-                             if "dest_range" in config
-                             else config["dest_ranges"])
+        self.src_range  = config["src_range"]
+        self.dest_range = config["dest_range"]
+        self.src_date_cell = config["src_date_cell"]
+        self.dest_date_cell = config["dest_date_cell"]    
 
-    def read_items(self, wb):
+    def read_date_cell(self, src_wb: Workbook) -> datetime: 
+        return extract_date(src_wb, self.src_date_cell)
+    
+    def write_date_cell(self, dest_wb: Workbook, date_obj : datetime) -> None:
+        sheet = dest_wb.active
+        sheet[self.dest_date_cell].value = date_obj
+
+    def read_items(self, wb: Workbook) -> list[str]:
         # WE TAKE THE ACTIVE SHEET
         sheet = wb.active
         items = []
-        for row in sheet[self.src_ranges]:
+        for row in sheet[self.src_range]:
             for cell in row:
                 if cell.value and len(str(cell.value)) > 2:
                     items.append(str(cell.value).strip())
         return items
 
-    def write_items(self, wb, items):
+    def write_items(self, wb: Workbook, items: list[str]) -> None:
         # WE TAKE THE ACTIVE SHEET
         sheet = wb.active
 
-        '''
-        print(self.dest_ranges)
-        for row in sheet[self.dest_ranges]:
-            for cell in row:
-                cell.value = items.pop(0)
-        '''
-
         cells = [
             cell 
-            for row in sheet[self.dest_ranges]
+            for row in sheet[self.dest_range]
             for cell in row
         ]
 
         # sanity check
-        # we have X menu items per week, we should have 2X menuItems after translation
         if (len(items) != len(cells)): 
             raise ValueError(
                 f"Template expects {len(cells)} values, ", 
@@ -53,8 +49,6 @@ class ConfiguredMenuTemplate(IMenuTemplate):
         
         for cell, value in zip(cells, items): 
             cell.value = value
-
-
 
 
 class TemplateFactory:

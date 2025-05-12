@@ -1,18 +1,20 @@
 {
     "legacy": {
-        "src_sheet": "menu1",
-        "src_ranges": "B4:H20",
-        "dest_sheet": "output",
-        "dest_ranges": "F4:S13"
+        "src_range": "B4:H20",
+        "dest_range": "F4:S13",
+        "src_date_cell": "A2",
+        "dest_date_cell": "A1"
     },
     "3meals": {
-        "src_sheet": "menu_1",
-        "src_ranges": "B4:H20",
-        "dest_sheet": "three_meal_template",
-        "dest_ranges": "F4:S13"
+        "src_range": "B4:H20",
+        "dest_range": "F4:S13",
+        "src_date_cell": "A2",
+        "dest_date_cell": "A1"
     },
     "test": {
-        "src_ranges": "B4:B20",
-        "dest_ranges": "F4:G13"
+        "src_range": "B4:B20",
+        "dest_range": "F4:G13",
+        "src_date_cell": "A2",
+        "dest_date_cell": "A1"
     }
 }
