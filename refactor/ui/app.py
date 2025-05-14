@@ -10,7 +10,7 @@ class MenuAutoApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Menu Auto")
-        self.geometry("800x300")  # a bit taller for whitespace
+        self.geometry("800x300") 
 
         # ─── grid config ──────────────────────────────────────────
         # 3 cols: only the middle one stretches
@@ -30,7 +30,7 @@ class MenuAutoApp(tk.Tk):
         self.rowconfigure(7, weight=0)  # generate button
 
         # ─── in-app title + separator ─────────────────────────────
-        tk.Label(self, text="Menu Auto Omerlo v3.1.1 par LPRL", font=("Helvetica", 16, "bold")) \
+        tk.Label(self, text="Menu Automatique pour Omerlo, v3.1.1 par LPRL", font=("Helvetica", 16, "bold")) \
           .grid(row=0, column=0, columnspan=3, pady=(10,0))
         ttk.Separator(self, orient="horizontal") \
           .grid(row=1, column=0, columnspan=3, sticky="ew", pady=5)
@@ -45,7 +45,7 @@ class MenuAutoApp(tk.Tk):
         self.src_path = tk.StringVar()
         tk.Entry(self, textvariable=self.src_path) \
           .grid(row=3, column=1, sticky="ew", padx=5, pady=5)
-        tk.Button(self, text="choose", command=self.browse_src) \
+        tk.Button(self, text="choisir", command=self.browse_src) \
           .grid(row=3, column=2, padx=5, pady=5)
 
         # ─── template picker ───────────────────────────────────────
@@ -54,13 +54,13 @@ class MenuAutoApp(tk.Tk):
         self.tpl_path = tk.StringVar()
         tk.Entry(self, textvariable=self.tpl_path) \
           .grid(row=4, column=1, sticky="ew", padx=5, pady=5)
-        tk.Button(self, text="choose", command=self.browse_tpl) \
+        tk.Button(self, text="choisir", command=self.browse_tpl) \
           .grid(row=4, column=2, padx=5, pady=5)
 
         # ─── mode selector ─────────────────────────────────────────
         tk.Label(self, text="Mode:") \
           .grid(row=5, column=0, sticky="e", padx=5, pady=5)
-        self.template_var = tk.StringVar(value="legacy")
+        self.template_var = tk.StringVar(value="3repas")
         with open("templates.json") as f:
             choices = list(json.load(f).keys())
         tk.OptionMenu(self, self.template_var, *choices) \
@@ -73,7 +73,7 @@ class MenuAutoApp(tk.Tk):
         # ─── centered Generate button ──────────────────────────────
         self.generate_btn = tk.Button(
             self,
-            text="GENERATE MENU",
+            text="GÉNÉRER",
             width=20,
             command=self.on_generate
         )
@@ -106,7 +106,8 @@ class MenuAutoApp(tk.Tk):
         worker = threading.Thread(
             target=self._worker, 
             args=(template,), 
-            daemon=True)
+            daemon=True
+        )
         
         worker.start()
 

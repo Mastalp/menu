@@ -1,11 +1,11 @@
 {
-    "legacy": {
+    "3repas": {
         "src_range": "B4:H20",
         "dest_range": "F4:S13",
         "src_date_cell": "A2",
         "dest_date_cell": "A1"
     },
-    "3meals": {
+    "legacy": {
         "src_range": "B4:H20",
         "dest_range": "F4:S13",
         "src_date_cell": "A2",
