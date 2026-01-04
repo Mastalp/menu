@@ -1,0 +1,13 @@
+# Cols : B, C, D, E, F, G, H
+# entree et soupe : 5 6, 
+# entree A, B et C : 8, 11, 14
+# accs :9, 12, 15
+# dessert : 23
+# collation : 24
+# 
+# soir 
+# entree et soupe : 19 20,
+# entree A B et C : "
+# accs "
+# dessert : 26
+# collation : 27

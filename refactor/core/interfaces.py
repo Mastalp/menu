@@ -2,25 +2,33 @@ from abc import ABC, abstractmethod
 from openpyxl import Workbook
 from datetime import datetime
 
-# IMenuTemplate, ITranslator, IProgressBar
 
-class IMenuTemplate(ABC):
-    @abstractmethod
-    def read_items(self, wb: Workbook) -> list[str]:
-        pass
+# IMenuTemplate, ITranslator, IProgressBar, IExtractor
 
-    @abstractmethod
-    def write_items(self, wb: Workbook, items: list[str]) -> None:
-        pass
-
+    
+class IExtractor(ABC):
     @abstractmethod
     def read_date_cell(self, wb: Workbook) -> datetime:
-        pass 
+        pass
 
+    @abstractmethod
+    def extract_data(self, wb: Workbook) -> list:
+        pass
+
+     
+class IMenuFiller(ABC):
     @abstractmethod 
     def write_date_cell(self, wb: Workbook, date_obj: datetime) -> None:
         pass
 
+        """
+         @abstractmethod
+    def write_items(self, wb: Workbook, items: list[str]) -> None:
+        pass
+        """
+   
+class IMenuTemplate(ABC):
+    pass
 
 class ITranslator(ABC):
     @abstractmethod

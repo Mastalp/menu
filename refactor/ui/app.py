@@ -3,8 +3,9 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import json
 from openpyxl import load_workbook
-from core import TemplateFactory, MenuFiller, GoogleTranslator, TkProgressBar, IMenuTemplate
-
+from core import MenuFiller, GoogleTranslator, TkProgressBar
+from core.extractor import ExtractorFactory
+from core.interfaces import *
 
 class MenuAutoApp(tk.Tk):
     def __init__(self):
@@ -43,6 +44,7 @@ class MenuAutoApp(tk.Tk):
         tk.Label(self, text="Menu source:") \
           .grid(row=3, column=0, sticky="e", padx=5, pady=5)
         self.src_path = tk.StringVar()
+        
         tk.Entry(self, textvariable=self.src_path) \
           .grid(row=3, column=1, sticky="ew", padx=5, pady=5)
         tk.Button(self, text="choisir", command=self.browse_src) \
@@ -60,7 +62,7 @@ class MenuAutoApp(tk.Tk):
         # ─── mode selector ─────────────────────────────────────────
         tk.Label(self, text="Mode:") \
           .grid(row=5, column=0, sticky="e", padx=5, pady=5)
-        self.template_var = tk.StringVar(value="3repas")
+        self.template_var = tk.StringVar(value="officiel")
         with open("templates.json") as f:
             choices = list(json.load(f).keys())
         tk.OptionMenu(self, self.template_var, *choices) \
@@ -80,6 +82,23 @@ class MenuAutoApp(tk.Tk):
         # no sticky ⇒ stays at its natural size, centered in the span
         self.generate_btn.grid(row=7, column=0, columnspan=3, pady=20)
 
+
+        # TEST ------------------------------------------- * * * *
+        print("TESTSITING")
+        self.src_path = "/home/mastalp/Documents/menu/refactor/source_file.xlsx"
+        self.tpl_path = "/home/mastalp/Documents/menu/refactor/menu_template.xlsx"
+        e = ExtractorFactory("templates.json")
+        source = e.get(self.template_var.get())
+        destination = e.get("template")
+        src_wb = load_workbook(self.src_path)
+        dest_wb = load_workbook(self.tpl_path)
+
+        src_date_cell = source.read_date_cell(src_wb).value
+        dest_date_cell = destination.read_date_cell(dest_wb).value
+        print(source, destination)
+        print(type(src_date_cell), type(dest_date_cell))
+
+
     def browse_src(self):
         path = filedialog.askopenfilename(filetypes=[("Excel","*.xlsx")])
         if path:
@@ -95,21 +114,24 @@ class MenuAutoApp(tk.Tk):
         self.generate_btn.config(state='disabled')
 
         # Prepare template and determine total items
-        factory = TemplateFactory("templates.json")
-        template = factory.get(self.template_var.get())
-        src_wb = load_workbook(self.src_path.get())
-        total = len(template.read_items(src_wb))
-        self.progress['value'] = 0
-        self.progress['maximum'] = total
+        
+        #factory = TemplateFactory("templates.json")
+        #template = factory.get(self.template_var.get())
+        #src_wb = load_workbook(self.src_path.get())
+        #total = len(template.read_items(src_wb))
+        #self.progress['value'] = 0
+        #self.progress['maximum'] = total
+
+        
 
         # Start translation/write in background thread
-        worker = threading.Thread(
-            target=self._worker, 
-            args=(template,), 
-            daemon=True
-        )
+        #worker = threading.Thread(
+        #    target=self._worker, 
+        #    args=(template,), 
+        #    daemon=True
+        #)
         
-        worker.start()
+        #worker.start()
 
     def _worker(self, template: IMenuTemplate):
         try:

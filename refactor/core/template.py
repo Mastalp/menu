@@ -1,12 +1,13 @@
 import json
 from core.interfaces import IMenuTemplate
+from core.extractor import Extractor
 from core.date_utils import extract_date
 from datetime import datetime
 from openpyxl import Workbook
 
 # ConfiguredMenuTemplate, TemplateFactory
 
-class ConfiguredMenuTemplate(IMenuTemplate):
+class ConfiguredMenuTemplate():
     def __init__(self, config: dict):
         self.src_range  = config["src_range"]
         self.dest_range = config["dest_range"]
@@ -55,7 +56,7 @@ class TemplateFactory:
     def __init__(self, config_path: str):
         self.configs = json.load(open(config_path))
 
-    def get(self, key: str) -> IMenuTemplate:
+    def get(self, key: str):
         cfg = self.configs.get(key)
         if not cfg:
             raise ValueError(f"No template named '{key}'")
