@@ -85,18 +85,52 @@ class MenuAutoApp(tk.Tk):
 
         # TEST ------------------------------------------- * * * *
         print("TESTSITING")
-        self.src_path = "/home/mastalp/Documents/menu/refactor/source_file.xlsx"
-        self.tpl_path = "/home/mastalp/Documents/menu/refactor/menu_template.xlsx"
-        e = ExtractorFactory("templates.json")
-        source = e.get(self.template_var.get())
-        destination = e.get("template")
-        src_wb = load_workbook(self.src_path)
-        dest_wb = load_workbook(self.tpl_path)
+        s = self.src_path = "/home/mastalp/Documents/menu/refactor/source_file.xlsx"
+        t = self.tpl_path = "/home/mastalp/Documents/menu/refactor/template_omerlo.xlsx"
+        e_factory = ExtractorFactory("templates.json")
+        extractor = e_factory.get(self.template_var.get())
 
-        src_date_cell = source.read_date_cell(src_wb).value
-        dest_date_cell = destination.read_date_cell(dest_wb).value
-        print(source, destination)
-        print(type(src_date_cell), type(dest_date_cell))
+
+        src_wb = load_workbook(s)
+        dest_wb = load_workbook(t)
+
+        s = extractor.extract_data("source")
+        print("---\n")
+        d = extractor.extract_data("destination")
+
+        for c in s:
+            print(c)
+
+        print("Cest vraiment modulaire mon affaire")
+
+        for c in d:
+            print(c)
+        #
+        #src_map = {item.key: item for item in s}
+        #dst_map = {item.key: item for item in d}
+
+
+        #for key, dst_item in dst_map.items():
+        #  src_item = src_map.get(key)
+        #  if not src_item:
+        #    continue
+        #  dst_sheet[dst_item.cell].value = src_sheet[src_item.cell].value
+
+
+        #for c in src_map:
+        #    print(c)
+        #for c in dst_map:
+        #    print(c)
+
+
+
+
+        #src_date_cell = source.read_date_cell(src_wb).value
+        #dest_date_cell = destination.read_date_cell(dest_wb).value
+        #print(source, destination)
+        #print(type(src_date_cell), type(dest_date_cell))
+
+        # --------------------
 
 
     def browse_src(self):

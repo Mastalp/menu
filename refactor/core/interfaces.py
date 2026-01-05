@@ -8,11 +8,7 @@ from datetime import datetime
     
 class IExtractor(ABC):
     @abstractmethod
-    def read_date_cell(self, wb: Workbook) -> datetime:
-        pass
-
-    @abstractmethod
-    def extract_data(self, wb: Workbook) -> list:
+    def extract_data(self, mode: str) -> list:
         pass
 
      
@@ -21,11 +17,14 @@ class IMenuFiller(ABC):
     def write_date_cell(self, wb: Workbook, date_obj: datetime) -> None:
         pass
 
-        """
-         @abstractmethod
-    def write_items(self, wb: Workbook, items: list[str]) -> None:
+    @abstractmethod
+    def read_items(self):
         pass
-        """
+        
+    @abstractmethod
+    def write_items(self, src_wb: Workbook, dest_wb: Workbook, src_data: list, dest_data = list):
+        pass
+        
    
 class IMenuTemplate(ABC):
     pass

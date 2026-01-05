@@ -1,104 +1,116 @@
 {
-    "template": {
-        "meta_data": {
-            "date_cell": "A1",
-            "columns": {
-                "monday": "F",
-                "tuesday": "H",
-                "wednesday": "J",
-                "thursday": "L",
-                "friday": "N",
-                "saturday": "P",
-                "sunday": "R"
-            }
-        },
-        "lunch": {
-            "starters_and_soups": {
-                "soup": 4,
-                "entree": 5
-            },
-            "desserts_and_snacks": {
-                "dessert": 9
-            },
-            "main": {
-                "entrees": {
-                    "A": 6,
-                    "B": 7,
-                    "C": 8
-                }
-            }
-        },
-        "dinner": {
-            "starters_and_soups": {
-                "soup": 10,
-                "entree": 11
-            },
-            "desserts_and_snacks": {
-                "dessert": 15
-            },
-            "main": {
-                "entrees": {
-                    "A": 12,
-                    "B": 13,
-                    "C": 14
-                }
-            }
-        }
-    },
     "officiel": {
-        "meta_data": {
-            "date_cell": "B3",
-            "columns": {
-                "monday": "B",
-                "tuesday": "C",
-                "wednesday": "D",
-                "thursday": "E",
-                "friday": "F",
-                "saturday": "G",
-                "sunday": "H"
-            }
-        },
-        "lunch": {
-            "starters_and_soups": {
-                "soup": 5,
-                "entree": 6
-            },
-            "desserts_and_snacks": {
-                "dessert": 23,
-                "snack": 24
-            },
-            "main": {
-                "entrees": {
-                    "A": 8,
-                    "B": 11,
-                    "C": 14
+        "source": {
+            "meta_data": {
+                "date_cell": "B3",
+                "columns_fr": {
+                    "lundi": "B",
+                    "mardi": "C",
+                    "mercredi": "D",
+                    "jeudi": "E",
+                    "vendredi": "F",
+                    "samedi": "G",
+                    "dimanche": "H"
                 },
-                "sides": {
-                    "A": 9,
-                    "B": 12,
-                    "C": 15
+                "columns_eng": {}
+            },
+            "lunch": {
+                "starters_and_soups": {
+                    "soup": 5,
+                    "entree": 6
+                },
+                "desserts_and_snacks": {
+                    "dessert": 23,
+                    "snack": 24
+                },
+                "main": {
+                    "entrees": {
+                        "A": 8,
+                        "B": 11,
+                        "C": 14
+                    },
+                    "sides": {
+                        "A": 9,
+                        "B": 12,
+                        "C": 15
+                    }
+                }
+            },
+            "dinner": {
+                "starters_and_soups": {
+                    "soup": 19,
+                    "entree": 20
+                },
+                "desserts_and_snacks": {
+                    "dessert": 26,
+                    "snack": 27
+                },
+                "main": {
+                    "entrees": {
+                        "A": 8,
+                        "B": 11,
+                        "C": 14
+                    },
+                    "sides": {
+                        "A": 9,
+                        "B": 12,
+                        "C": 15
+                    }
                 }
             }
         },
-        "dinner": {
-            "starters_and_soups": {
-                "soup": 19,
-                "entree": 20
-            },
-            "desserts_and_snacks": {
-                "dessert": 26,
-                "snack": 27
-            },
-            "main": {
-                "entrees": {
-                    "A": 8,
-                    "B": 11,
-                    "C": 14
+        "template": {
+            "meta_data": {
+                "date_cell": "A1",
+                "columns_fr": {
+                    "lundi": "F",
+                    "mardi": "H",
+                    "mercredi": "J",
+                    "jeudi": "L",
+                    "vendredi": "N",
+                    "samedi": "P",
+                    "dimanche": "R"
                 },
-                "sides": {
-                    "A": 9,
-                    "B": 12,
-                    "C": 15
+                "columns_eng": {
+                    "monday": "G",
+                    "tuesday": "I",
+                    "wednesday": "K",
+                    "thursday": "M",
+                    "friday": "O",
+                    "saturday": "Q",
+                    "sunday": "S"
+                }
+            },
+            "lunch": {
+                "starters_and_soups": {
+                    "soup": 4,
+                    "entree": 5
+                },
+                "desserts_and_snacks": {
+                    "dessert": 9
+                },
+                "main": {
+                    "entrees": {
+                        "A": 6,
+                        "B": 7,
+                        "C": 8
+                    }
+                }
+            },
+            "dinner": {
+                "starters_and_soups": {
+                    "soup": 10,
+                    "entree": 11
+                },
+                "desserts_and_snacks": {
+                    "dessert": 15
+                },
+                "main": {
+                    "entrees": {
+                        "A": 12,
+                        "B": 13,
+                        "C": 14
+                    }
                 }
             }
         }
