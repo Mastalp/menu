@@ -3,16 +3,24 @@ from openpyxl import Workbook
 from datetime import datetime
 
 
-# IMenuTemplate, ITranslator, IProgressBar, IExtractor
+# IMenuTemplate, ITranslator, IProgressBar, IExtractor, IMenuFiller
 
     
 class IExtractor(ABC):
     @abstractmethod
     def extract_data(self, mode: str) -> list:
         pass
+    
+    @abstractmethod
+    def get_date_cell(self, mode: str):
+        pass
 
      
 class IMenuFiller(ABC):
+    @abstractmethod
+    def read_date_cell(self, src_wb: Workbook) -> datetime: 
+        pass
+    
     @abstractmethod 
     def write_date_cell(self, wb: Workbook, date_obj: datetime) -> None:
         pass
@@ -28,6 +36,7 @@ class IMenuFiller(ABC):
    
 class IMenuTemplate(ABC):
     pass
+
 
 class ITranslator(ABC):
     @abstractmethod

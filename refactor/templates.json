@@ -84,32 +84,32 @@
             "lunch": {
                 "starters_and_soups": {
                     "soup": 4,
-                    "entree": 5
+                    "entree": 4
                 },
                 "desserts_and_snacks": {
-                    "dessert": 9
+                    "dessert": 8
                 },
                 "main": {
                     "entrees": {
-                        "A": 6,
-                        "B": 7,
-                        "C": 8
+                        "A": 5,
+                        "B": 6,
+                        "C": 7
                     }
                 }
             },
             "dinner": {
                 "starters_and_soups": {
-                    "soup": 10,
-                    "entree": 11
+                    "soup": 9,
+                    "entree": 9
                 },
                 "desserts_and_snacks": {
-                    "dessert": 15
+                    "dessert": 13
                 },
                 "main": {
                     "entrees": {
-                        "A": 12,
-                        "B": 13,
-                        "C": 14
+                        "A": 10,
+                        "B": 11,
+                        "C": 12
                     }
                 }
             }

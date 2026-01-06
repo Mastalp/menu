@@ -23,7 +23,7 @@ def parse_menu_date(raw, fmt: str = "%d-%mmmm-%Y") -> datetime:
         raise ValueError(f"Cannot parse date from {raw!r}")
 
 def extract_date(wb, cell: str) -> datetime:
-    return wb.active[cell]
+    return wb.active[cell].value
 
 def get_output_filename(date_obj: datetime) -> str:
     french_month = FRENCH_MONTHS[date_obj.month - 1]

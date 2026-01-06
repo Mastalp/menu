@@ -1,27 +1,37 @@
 from core.interfaces import IExtractor
-from core.date_utils import extract_date
+
 from dataclasses import dataclass
 from typing import Any, Iterable, Literal
 from datetime import datetime
 from openpyxl import Workbook
 import json
 
-MEALS = ["lunch", "dinner"]
-LANG = ["fr", "eng"]
-FRENCH_DAYS = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
-ENGLISH_DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-SOURCE = "source"
-TEMPLATE = "template"
-META_DATA = "meta_data"
-DATE_CELL = "date_cell"
+MEALS = ['lunch', 'dinner']
+LANG = ['fr', 'eng']
+FR_TO_ENG_DAYS = {
+    "lundi" : "monday",
+    "mardi" : "tuesday",
+    "mercredi" : "wednesday",
+    "jeudi" : "thursday",
+    "vendredi" : "friday",
+    "samedi" : "saturday",
+    "dimanche" : "sunday"
+}
+ENG_TO_FR_DAYS = {en: fr for fr, en in FR_TO_ENG_DAYS.items()}
+FRENCH_DAYS = set(FR_TO_ENG_DAYS.keys())
+ENGLISH_DAYS = set(ENG_TO_FR_DAYS.keys())
+SOURCE = 'source'
+TEMPLATE = 'template'
+META_DATA = 'meta_data'
+DATE_CELL = 'date_cell'
 ENCODING = 'utf-8'
 
-Key = tuple[str, str, tuple[str, ...]]  # (day, meal, path)
+Key = tuple[str, str, tuple[str, ...], str]  # (day, meal, path, lang)
 
-@dataclass(frozen=True)
+@dataclass
 class ExtractedItem:
     day: str
-    meal : str
+    meal: str
     path: tuple[str, ...]
     cell: str
     lang: str
@@ -29,7 +39,7 @@ class ExtractedItem:
 
     @property
     def key(self) -> Key:
-        return (self.day, self.meal, self.path)
+        return (self.day, self.meal, self.path, self.lang)
 
 # THIS EXTRACTS INFORMATION FROM templates.json FILE STRUCTURE
 class Extractor(IExtractor):
@@ -39,19 +49,21 @@ class Extractor(IExtractor):
         self.dest = config[TEMPLATE]
         self.src_date_cell = self.source[META_DATA][DATE_CELL]
         self.dest_date_cell = self.dest[META_DATA][DATE_CELL]
-
-    # ---
-    def get_source_data(self):
-        return self.source
-
-    def get_template_data(self):
-        return self.dest
     
-    def read_date_cell(self, src_wb: Workbook) -> datetime: 
-        return extract_date(src_wb, self.src_date_cell)
+    def eng_to_french_day(self, day: str):
+        return ENG_TO_FR_DAYS[day]
     
-    # ---
-     
+    def french_to_eng_day(self, day: str):
+        return FR_TO_ENG_DAYS[day]
+    
+    def get_date_cell(self, mode: str) -> str:
+        if mode == SOURCE:
+            return self.src_date_cell
+        elif mode == TEMPLATE:
+            return self.dest_date_cell
+        else:
+            raise ValueError(f'unknown mode {mode}')
+        
     def iter_leaves(self, root: dict, path: tuple[str, ...] = ()) -> Iterable[tuple[tuple[str, ...], Any]]:
         for k, v in root.items():
             if isinstance(v, dict):
@@ -61,16 +73,16 @@ class Extractor(IExtractor):
 
     # Extract source data from json file with specific template
     def extract_data(self, mode:str) -> list[ExtractedItem]:
-        extracted_items = []
-
         if mode == SOURCE:
             section = self.source
-        elif mode in (TEMPLATE, "destination", "dest"):
+        elif mode in (TEMPLATE, 'destination', 'dest'):
             section = self.dest
         else:
-            raise ValueError(f"Unknown mode: {mode}")
+            raise ValueError(f'Unknown mode: {mode}')
 
-        cols: list[str] = [section[META_DATA][f"columns_{lang}"] for lang in LANG]
+        # json needs columns_eng even if its empty 
+        cols: list[str] = [section[META_DATA][f'columns_{lang}'] for lang in LANG]
+        extracted_items: list[ExtractedItem] = []
         
         for c in cols:
             for current_day, current_column in c.items():
@@ -84,7 +96,7 @@ class Extractor(IExtractor):
                             data = ExtractedItem(current_day, meal_name, path, cell, LANG[1]) 
                             extracted_items.append(data)
                         else: 
-                            raise ValueError(f"Language not supported (or writing mistake)")
+                            raise ValueError(f"Language not supported (or spelling mistake)")
 
         return extracted_items
 
@@ -99,4 +111,3 @@ class ExtractorFactory:
             raise ValueError(f"No template named '{key}'")
         
         return Extractor(cfg)
-
