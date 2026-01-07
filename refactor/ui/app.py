@@ -7,6 +7,8 @@ from core import MenuFiller, GoogleTranslator, TkProgressBar
 from core.extractor import ExtractorFactory
 from core.interfaces import *
 
+VERSION = '4.0.0'
+
 class MenuAutoApp(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -31,7 +33,7 @@ class MenuAutoApp(tk.Tk):
         self.rowconfigure(7, weight=0)  # generate button
 
         # ─── in-app title + separator ─────────────────────────────
-        tk.Label(self, text="Menu Automatique pour Omerlo, v3.1.1 par LPRL", font=("Helvetica", 16, "bold")) \
+        tk.Label(self, text=f"Menu Automatique pour Omerlo, v{VERSION} par LPRL", font=("Helvetica", 16, "bold")) \
           .grid(row=0, column=0, columnspan=3, pady=(10,0))
         ttk.Separator(self, orient="horizontal") \
           .grid(row=1, column=0, columnspan=3, sticky="ew", pady=5)
@@ -83,24 +85,6 @@ class MenuAutoApp(tk.Tk):
         self.generate_btn.grid(row=7, column=0, columnspan=3, pady=20)
 
 
-        # TEST ------------------------------------------- * * * 
-        s = self.src_path = "/home/mastalp/Documents/menu/refactor/source_file.xlsx"
-        t = self.tpl_path = "/home/mastalp/Documents/menu/refactor/template_omerlo.xlsx"
-        e_factory = ExtractorFactory("templates.json")
-        extractor = e_factory.get(self.template_var.get())
-
-        src_wb = load_workbook(s)
-        dest_wb = load_workbook(t)
-
-        mf = MenuFiller(src_wb, dest_wb, extractor, GoogleTranslator(), TkProgressBar(self.progress))
-
-        mf.run()
-        dest_wb.save("/home/mastalp/Documents/menu/refactor/output.xlsx")
-
-
-        # --------------------
-
-
     def browse_src(self):
         path = filedialog.askopenfilename(filetypes=[("Excel","*.xlsx")])
         if path:
@@ -116,38 +100,38 @@ class MenuAutoApp(tk.Tk):
         self.generate_btn.config(state='disabled')
 
         # Prepare template and determine total items
-        
-        #factory = TemplateFactory("templates.json")
-        #template = factory.get(self.template_var.get())
-        #src_wb = load_workbook(self.src_path.get())
-        #total = len(template.read_items(src_wb))
-        #self.progress['value'] = 0
-        #self.progress['maximum'] = total
+        e_factory = ExtractorFactory("templates.json")
+        extractor = e_factory.get(self.template_var.get())
 
-        
+        total = sum(1 for it in extractor.extract_data('template') if it.lang == "eng")
+        self.progress['value'] = 0
+        self.progress['maximum'] = total
 
         # Start translation/write in background thread
-        #worker = threading.Thread(
-        #    target=self._worker, 
-        #    args=(template,), 
-        #    daemon=True
-        #)
+        worker = threading.Thread(
+            target=self._worker, 
+            args=(extractor,), 
+            daemon=True
+        )
         
-        #worker.start()
+        worker.start()
+  
 
-    def _worker(self, template: IMenuTemplate):
+    def _worker(self, extractor: IExtractor):
         try:
             src_wb = load_workbook(self.src_path.get())
             tpl_wb = load_workbook(self.tpl_path.get())
 
             filler = MenuFiller(
-                template,
+                src_wb,
+                tpl_wb,
+                extractor,
                 GoogleTranslator(),
                 TkProgressBar(self.progress)
             )
 
             # Execute the fill process and get the file name 
-            out_name = filler.run(src_wb, tpl_wb)
+            out_name = filler.run()
 
             # Save result 
             tpl_wb.save(out_name)

@@ -2,10 +2,7 @@ from abc import ABC, abstractmethod
 from openpyxl import Workbook
 from datetime import datetime
 
-
-# IMenuTemplate, ITranslator, IProgressBar, IExtractor, IMenuFiller
-
-    
+# ITranslator, IProgressBar, IExtractor, IMenuFiller
 class IExtractor(ABC):
     @abstractmethod
     def extract_data(self, mode: str) -> list:
@@ -33,10 +30,6 @@ class IMenuFiller(ABC):
     def write_items(self, src_wb: Workbook, dest_wb: Workbook, src_data: list, dest_data = list):
         pass
         
-   
-class IMenuTemplate(ABC):
-    pass
-
 
 class ITranslator(ABC):
     @abstractmethod

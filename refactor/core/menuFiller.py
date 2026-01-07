@@ -1,9 +1,8 @@
 from core.interfaces import *
 from core.date_utils import get_output_filename
 from openpyxl import Workbook
-import json 
 from core.date_utils import extract_date
-from core.extractor import Extractor, ExtractedItem
+from core.extractor import ExtractedItem
 from typing import Iterable, Any
 from core.extractor import Key
 
@@ -27,25 +26,15 @@ class MenuFiller(IMenuFiller):
         self.source = self.extractor.extract_data('source')
         self.template = self.extractor.extract_data('template')
 
-    def items_to_value_map(self, items: Iterable[ExtractedItem], *, strict: bool = True) -> dict[Key, Any]:
-        """
-        Build a dict mapping ExtractedItem.key -> menu_item
 
-        strict=True  : raise if duplicate keys are found
-        strict=False : last value wins
-        """
+    def items_to_value_map(self, items: Iterable[ExtractedItem]) -> dict[Key, Any]:
         out: dict[Key, Any] = {}
         for it in items:
-            if strict and it.key in out:
-                raise ValueError(f"Duplicate key detected: {it.key}")
             out[it.key] = it.menu_item
         return out
     
+
     def value_map_to_items(self, value_map: dict[Key, Any], template_items: Iterable[ExtractedItem],) -> list[ExtractedItem]:
-        """
-        Rebuild a list[ExtractedItem] using an existing template list
-        and a dict mapping key -> menu_item
-        """
         out: list[ExtractedItem] = []
 
         for it in template_items:
@@ -64,13 +53,14 @@ class MenuFiller(IMenuFiller):
         return out
 
 
-
     def read_date_cell(self) -> datetime: 
         return extract_date(self.src_wb, self.extractor.get_date_cell('source'))
+
 
     def write_date_cell(self, date_obj : datetime) -> None:
         sheet = self.dest_sheet
         sheet[self.extractor.dest_date_cell].value = date_obj
+
 
     def read_items(self) -> dict:
         ex_items: list[ExtractedItem] = self.source 
@@ -80,6 +70,7 @@ class MenuFiller(IMenuFiller):
             i.menu_item = sheet[i.cell].value
 
         return self.items_to_value_map(ex_items)
+
 
     # src_data needs to be extracted items from template, and the dest_cells should all be empty (=None)
     def write_items(self, src_data: dict):
@@ -97,7 +88,7 @@ class MenuFiller(IMenuFiller):
 
     def populate_template_items(self, src_data: dict[Key, Any]) -> dict[Key, Any]:
         # template map: all keys that exist in the destination schema
-        dest_map: dict[Key, Any] = self.items_to_value_map(self.template, strict=False)
+        dest_map: dict[Key, Any] = self.items_to_value_map(self.template)
 
         items = list(dest_map.keys())
         for i, k in enumerate(items, 1):
@@ -120,8 +111,6 @@ class MenuFiller(IMenuFiller):
                 raise ValueError(f"Unexpected lang: {lang}")
 
         return dest_map
-
-
 
 
     def run(self) -> str:
